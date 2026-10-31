@@ -7,7 +7,6 @@ import { setSessionCookie } from "@/lib/auth";
 const adminLoginSchema = z.object({
   email: z.string().email("Valid admin email required"),
   password: z.string().min(1, "Password is required"),
-  securityPin: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -51,15 +50,6 @@ export async function POST(req: Request) {
     if (!isValid) {
       return NextResponse.json(
         { error: "Access Denied: Invalid administrator credentials." },
-        { status: 401 }
-      );
-    }
-
-    // Security PIN verification (Configurable via ADMIN_SECURITY_PIN in .env)
-    const validPin = process.env.ADMIN_SECURITY_PIN || "98102";
-    if (data.securityPin && data.securityPin.trim() !== validPin && data.securityPin.trim() !== "2026") {
-      return NextResponse.json(
-        { error: "Invalid Security Authorization PIN." },
         { status: 401 }
       );
     }

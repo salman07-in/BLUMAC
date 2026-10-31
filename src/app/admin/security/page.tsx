@@ -71,11 +71,11 @@ export default async function AdminSecurityPage() {
 
         <div className="bg-white rounded-2xl p-6 border border-blumac-beige shadow-subtle space-y-2">
           <div className="flex items-center justify-between text-blumac-slate">
-            <span className="text-xs font-bold uppercase tracking-wider">2FA Master PIN</span>
-            <KeyRound className="w-4 h-4 text-blumac-copper" />
+            <span className="text-xs font-bold uppercase tracking-wider">Authentication Mode</span>
+            <Lock className="w-4 h-4 text-blumac-copper" />
           </div>
-          <p className="text-lg font-bold text-blumac-navy">Enforced</p>
-          <p className="text-[11px] text-blumac-slate font-medium">Secondary Challenge Required</p>
+          <p className="text-lg font-bold text-blumac-navy">Direct Email &amp; Password</p>
+          <p className="text-[11px] text-emerald-600 font-medium">Single-Step Admin Clearance</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 border border-blumac-beige shadow-subtle space-y-2">

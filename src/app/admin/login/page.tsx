@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   Lock,
   Mail,
-  KeyRound,
   ArrowRight,
   AlertCircle,
   CheckCircle2,
@@ -19,7 +18,6 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [securityPin, setSecurityPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -36,7 +34,6 @@ export default function AdminLoginPage() {
         body: JSON.stringify({
           email,
           password,
-          securityPin: securityPin || undefined,
         }),
       });
 
@@ -136,26 +133,6 @@ export default function AdminLoginPage() {
                   className="w-full bg-[#0B182D]/80 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-white/30 focus:outline-none focus:border-blumac-copper focus:bg-[#0B182D] transition-colors"
                 />
                 <Lock className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-blumac-beige">
-                  Security Authorization PIN
-                </label>
-                <span className="text-[10px] text-blumac-copperLight">2FA Enabled</span>
-              </div>
-              <div className="relative">
-                <input
-                  type="password"
-                  maxLength={6}
-                  value={securityPin}
-                  onChange={(e) => setSecurityPin(e.target.value)}
-                  placeholder="e.g. 98102"
-                  className="w-full bg-[#0B182D]/80 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-white/30 tracking-widest focus:outline-none focus:border-blumac-copper focus:bg-[#0B182D] transition-colors"
-                />
-                <KeyRound className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 
