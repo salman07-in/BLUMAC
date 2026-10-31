@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" fill="none">
+  <defs>
+    <linearGradient id="copperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DE9984"/>
+      <stop offset="50%" stop-color="#C77B64"/>
+      <stop offset="100%" stop-color="#A85E48"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Botanical Korean Beauty Crest -->
+  <g transform="translate(300, 55)" stroke="url(#copperGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Center flower bud -->
+    <path d="M0, -25 C-12, -15 -10, 0 0, 10 C10, 0 12, -15 0, -25 Z" fill="#F8F5EF" fill-opacity="0.5"/>
+    <path d="M0, -25 C-6, -10 -4, 2 0, 10"/>
+    <path d="M-8, -10 C-18, -4 -16, 8 -6, 12"/>
+    <path d="M8, -10 C18, -4 16, 8 6, 12"/>
+    <!-- Left foliage spray -->
+    <path d="M-6, 10 C-22, 12 -42, 4 -50, -10"/>
+    <path d="M-30, 8 C-36, -2 -34, -12 -44, -16 C-40, -4 -32, 2 -30, 8"/>
+    <path d="M-18, 11 C-24, 18 -32, 16 -38, 22 C-32, 22 -22, 18 -18, 11"/>
+    <!-- Right foliage spray -->
+    <path d="M6, 10 C22, 12 42, 4 50, -10"/>
+    <path d="M30, 8 C36, -2 34, -12 44, -16 C40, -4 32, 2 30, 8"/>
+    <path d="M18, 11 C24, 18 32, 16 38, 22 C32, 22 22, 18 18, 11"/>
+    <!-- Center stem -->
+    <path d="M0, 10 L0, 20"/>
+  </g>
+
+  <!-- BLUMAC Typography -->
+  <text x="300" y="148" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="52" font-weight="700" letter-spacing="6" fill="#142B50">
+    BLUMAC
+  </text>
+
+  <!-- Divider Line -->
+  <line x1="210" y1="168" x2="390" y2="168" stroke="url(#copperGrad)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Subtitle -->
+  <text x="300" y="196" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="600" letter-spacing="10" fill="#142B50">
+    KOREAN STORE
+  </text>
+</svg>
