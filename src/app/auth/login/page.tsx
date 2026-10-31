@@ -112,7 +112,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="pt-4 border-t border-blumac-beige text-center space-y-3">
+        <div className="pt-4 border-t border-blumac-beige text-center">
           <p className="text-xs text-blumac-slate">
             Don't have an account yet?{" "}
             <Link
@@ -122,12 +122,6 @@ export default function LoginPage() {
               Register here
             </Link>
           </p>
-
-          <div className="p-3 bg-blumac-ivory rounded-lg border border-blumac-beige text-[11px] text-blumac-slate text-left">
-            <p className="font-semibold text-blumac-navy mb-1">Demo Admin Login:</p>
-            <p>Email: <code className="text-blumac-navy font-bold">admin@blumac.in</code></p>
-            <p>Password: <code className="text-blumac-navy font-bold">BlumacAdmin@2026</code></p>
-          </div>
         </div>
       </div>
     </div>

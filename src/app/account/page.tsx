@@ -4,32 +4,39 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  User,
   ShoppingBag,
   Heart,
   MapPin,
   Sparkles,
   LogOut,
-  Clock,
   ShieldCheck,
   ChevronRight,
   Truck,
+  Package,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.user) {
+    Promise.all([
+      fetch("/api/auth/me").then((res) => res.json()),
+      fetch("/api/orders/my-orders")
+        .then((res) => res.json())
+        .catch(() => ({ orders: [] })),
+    ])
+      .then(([userData, orderData]) => {
+        if (!userData.user) {
           router.push("/auth/login");
         } else {
-          setUser(data.user);
+          setUser(userData.user);
+          if (orderData?.orders) {
+            setOrders(orderData.orders);
+          }
         }
       })
       .catch(() => router.push("/auth/login"))
@@ -53,6 +60,8 @@ export default function AccountPage() {
     );
   }
 
+  const latestOrder = orders.length > 0 ? orders[0] : null;
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
       {/* Top Header Card */}
@@ -67,7 +76,7 @@ export default function AccountPage() {
                 {user?.name}
               </h1>
               <span className="bg-blumac-copper/10 text-blumac-copper text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-blumac-copper/30">
-                {user?.role === "ADMIN" ? "Administrator" : "K-Beauty VIP"}
+                {user?.role === "ADMIN" ? "Administrator" : "K-Beauty Member"}
               </span>
             </div>
             <p className="text-xs text-blumac-slate mt-0.5">{user?.email}</p>
@@ -87,7 +96,7 @@ export default function AccountPage() {
 
           <button
             onClick={handleLogout}
-            className="px-5 py-2.5 bg-blumac-ivory hover:bg-blumac-beige text-blumac-navy text-xs font-bold uppercase tracking-wider rounded-lg border border-blumac-beige transition-colors flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-blumac-ivory hover:bg-blumac-beige text-blumac-navy text-xs font-bold uppercase tracking-wider rounded-lg border border-blumac-beige transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5 text-blumac-copper" />
             <span>Sign Out</span>
@@ -105,9 +114,9 @@ export default function AccountPage() {
             </span>
             <Sparkles className="w-4 h-4 text-blumac-copper" />
           </div>
-          <p className="text-3xl font-extrabold font-serif">150 Pts</p>
+          <p className="text-3xl font-extrabold font-serif">50 Pts</p>
           <p className="text-[11px] text-blumac-beige">
-            Worth ₹150 discount on your next authentic Korean skincare order.
+            Welcome reward earned. Redeem points on your next authentic Korean skincare order.
           </p>
         </div>
 
@@ -119,29 +128,32 @@ export default function AccountPage() {
             </span>
             <ShoppingBag className="w-4 h-4 text-blumac-copper" />
           </div>
-          <p className="text-3xl font-extrabold font-serif text-blumac-navy">1 Order</p>
+          <p className="text-3xl font-extrabold font-serif text-blumac-navy">
+            {orders.length} {orders.length === 1 ? "Order" : "Orders"}
+          </p>
           <Link
             href="/account/orders"
             className="text-[11px] font-semibold text-blumac-copper hover:underline block"
           >
-            View Order History & Tracking →
+            View Order History &amp; Tracking &rarr;
           </Link>
         </div>
 
-        {/* Saved Addresses */}
+        {/* Saved Addresses / Wishlist */}
         <div className="bg-white p-6 rounded-2xl border border-blumac-beige shadow-subtle space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-widest text-blumac-slate">
-              Primary Address
+              Saved Wishlist
             </span>
-            <MapPin className="w-4 h-4 text-blumac-copper" />
+            <Heart className="w-4 h-4 text-blumac-copper" />
           </div>
-          <p className="text-xs font-semibold text-blumac-navy">
-            Bengaluru 560038
-          </p>
-          <p className="text-[11px] text-blumac-slate line-clamp-1">
-            Indiranagar 100ft Road, Bengaluru, Karnataka
-          </p>
+          <p className="text-3xl font-extrabold font-serif text-blumac-navy">Favorites</p>
+          <Link
+            href="/account/wishlist"
+            className="text-[11px] font-semibold text-blumac-copper hover:underline block"
+          >
+            Browse Wishlist &rarr;
+          </Link>
         </div>
       </div>
 
@@ -150,58 +162,82 @@ export default function AccountPage() {
         <div className="flex items-center justify-between pb-4 border-b border-blumac-beige">
           <div>
             <h2 className="text-lg font-bold font-serif text-blumac-navy">
-              Recent Orders & Tracking
+              Recent Orders &amp; Tracking
             </h2>
             <p className="text-xs text-blumac-slate">
               Real-time courier updates with AWB tracking
             </p>
           </div>
-          <Link
-            href="/account/orders"
-            className="text-xs font-bold uppercase tracking-wider text-blumac-copper hover:underline flex items-center gap-1"
-          >
-            <span>See All Orders</span>
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        {/* Sample Seeded Order Card */}
-        <div className="p-5 bg-blumac-ivory/50 rounded-xl border border-blumac-beige space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div>
-              <span className="font-bold text-blumac-navy">Order #BLU-2026-98102</span>
-              <span className="text-blumac-slate ml-2">• 2 Items</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-full text-[10px] flex items-center gap-1">
-                <Truck className="w-3 h-3" /> In Transit (BlueDart)
-              </span>
-              <span className="text-blumac-navy font-extrabold text-sm">
-                {formatCurrency(2114)}
-              </span>
-            </div>
-          </div>
-
-          <div className="text-xs text-blumac-slate space-y-1">
-            <p>• COSRX Advanced Snail 96 Mucin Power Essence (100ml)</p>
-            <p>• Beauty of Joseon Relief Sun: Rice + Probiotics SPF50+ (50ml)</p>
-          </div>
-
-          <div className="pt-3 border-t border-blumac-beige/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <span className="text-blumac-slate">
-              AWB: <strong className="text-blumac-navy">BD98271892IN</strong> • Dispatched from Shahjahanpur Central Hub
-            </span>
-            <a
-              href="https://www.bluedart.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-bold text-blumac-copper hover:underline flex items-center gap-1"
+          {orders.length > 0 && (
+            <Link
+              href="/account/orders"
+              className="text-xs font-bold uppercase tracking-wider text-blumac-copper hover:underline flex items-center gap-1"
             >
-              <span>Track Courier</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
+              <span>See All Orders</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          )}
         </div>
+
+        {/* If user has real orders, render latest order */}
+        {latestOrder ? (
+          <div className="p-5 bg-blumac-ivory/50 rounded-xl border border-blumac-beige space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div>
+                <span className="font-bold text-blumac-navy">
+                  Order #{latestOrder.orderNumber}
+                </span>
+                <span className="text-blumac-slate ml-2">
+                  • {latestOrder.items?.length || 1} Item(s)
+                </span>
+                <span className="text-blumac-slate ml-2 text-[11px]">
+                  ({formatDate(latestOrder.createdAt)})
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-full text-[10px] flex items-center gap-1 uppercase">
+                  <Truck className="w-3 h-3" /> {latestOrder.status}
+                </span>
+                <span className="text-blumac-navy font-extrabold text-sm">
+                  {formatCurrency(latestOrder.grandTotal)}
+                </span>
+              </div>
+            </div>
+
+            <div className="text-xs text-blumac-slate space-y-1">
+              {latestOrder.items?.map((it: any, idx: number) => (
+                <p key={idx}>• {it.productName || it.name || "Korean Skincare Product"} (Qty: {it.quantity})</p>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-blumac-beige/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <span className="text-blumac-slate">
+                Payment: <strong className="text-blumac-navy">{latestOrder.paymentMethod}</strong>
+              </span>
+              <Link
+                href={`/order/confirmation/${latestOrder.orderNumber}`}
+                className="text-xs font-bold text-blumac-copper hover:underline flex items-center gap-1"
+              >
+                <span>View Full Invoice &amp; Tracking</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="p-8 text-center bg-blumac-ivory/30 rounded-xl border border-dashed border-blumac-beige space-y-3">
+            <Package className="w-8 h-8 text-blumac-copper/60 mx-auto" />
+            <p className="text-xs font-semibold text-blumac-navy">No orders placed yet</p>
+            <p className="text-[11px] text-blumac-slate max-w-sm mx-auto">
+              Your recent Korean skincare purchases and live tracking details will appear here once you place an order.
+            </p>
+            <Link
+              href="/shop"
+              className="inline-block mt-2 px-6 py-2 bg-blumac-navy hover:bg-blumac-copper text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors"
+            >
+              Start Shopping
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

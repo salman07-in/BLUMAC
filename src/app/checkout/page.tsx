@@ -79,7 +79,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("Karnataka");
   const [pinCode, setPinCode] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "RAZORPAY" | "MOCK">("MOCK");
+  const [paymentMethod, setPaymentMethod] = useState<"COD" | "RAZORPAY">("RAZORPAY");
   const [orderNotes, setOrderNotes] = useState("");
 
   const [couponInput, setCouponInput] = useState("");
@@ -433,10 +433,10 @@ export default function CheckoutPage() {
             </h2>
 
             <div className="space-y-3">
-              {/* Mock Test Payment (Selected by default for instant local zero-credential testing) */}
+              {/* Razorpay Online */}
               <label
                 className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  paymentMethod === "MOCK"
+                  paymentMethod === "RAZORPAY"
                     ? "border-blumac-copper bg-blumac-copper/5"
                     : "border-blumac-beige hover:border-blumac-slate"
                 }`}
@@ -444,21 +444,22 @@ export default function CheckoutPage() {
                 <input
                   type="radio"
                   name="paymentOption"
-                  checked={paymentMethod === "MOCK"}
-                  onChange={() => setPaymentMethod("MOCK")}
+                  checked={paymentMethod === "RAZORPAY"}
+                  onChange={() => setPaymentMethod("RAZORPAY")}
                   className="mt-0.5 accent-blumac-copper"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-blumac-copper" />
                     <span className="text-xs font-bold text-blumac-navy">
-                      Local Development Test Payment (Instant Success)
+                      Online Payment (Instant UPI / Cards / NetBanking)
                     </span>
-                    <span className="bg-blumac-copper text-white text-[9px] font-bold px-1.5 py-0.2 rounded">
-                      Local Dev Mode
+                    <span className="bg-blumac-forest/10 text-blumac-forest text-[9px] font-bold px-1.5 py-0.5 rounded border border-blumac-forest/20">
+                      Recommended
                     </span>
                   </div>
                   <p className="text-[11px] text-blumac-slate mt-0.5">
-                    Tests the complete order creation, inventory reservation, and invoice workflow without requiring live gateway credentials.
+                    Supports Google Pay, PhonePe, Paytm, RuPay, Visa, MasterCard &amp; NetBanking.
                   </p>
                 </div>
               </label>
@@ -487,34 +488,6 @@ export default function CheckoutPage() {
                   </div>
                   <p className="text-[11px] text-blumac-slate mt-0.5">
                     Pay in cash directly to the courier agent upon doorstep delivery.
-                  </p>
-                </div>
-              </label>
-
-              {/* Razorpay Online */}
-              <label
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  paymentMethod === "RAZORPAY"
-                    ? "border-blumac-copper bg-blumac-copper/5"
-                    : "border-blumac-beige hover:border-blumac-slate"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="paymentOption"
-                  checked={paymentMethod === "RAZORPAY"}
-                  onChange={() => setPaymentMethod("RAZORPAY")}
-                  className="mt-0.5 accent-blumac-copper"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-blumac-copper" />
-                    <span className="text-xs font-bold text-blumac-navy">
-                      Razorpay Online Payment (UPI / Cards / NetBanking)
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-blumac-slate mt-0.5">
-                    Supports Google Pay, PhonePe, Paytm, RuPay, Visa, MasterCard & all Indian banks.
                   </p>
                 </div>
               </label>

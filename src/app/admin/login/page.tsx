@@ -17,9 +17,9 @@ import {
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@blumac.in");
-  const [password, setPassword] = useState("BlumacAdmin@2026");
-  const [securityPin, setSecurityPin] = useState("98102");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [securityPin, setSecurityPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -176,12 +176,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Dev Hint Box */}
-          <div className="pt-4 border-t border-white/10 text-center space-y-1 text-[11px] text-white/50">
-            <p>Admin Clearance: <code className="text-blumac-copperLight font-mono">admin@blumac.in</code></p>
-            <p>Master Key: <code className="text-blumac-copperLight font-mono">BlumacAdmin@2026</code> • PIN: <code className="text-blumac-copperLight font-mono">98102</code></p>
-          </div>
         </div>
       </div>
 

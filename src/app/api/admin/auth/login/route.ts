@@ -55,10 +55,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // Optional 2FA / Security PIN verification (Default PIN: 98102)
-    if (data.securityPin && data.securityPin.trim() !== "98102" && data.securityPin.trim() !== "2026") {
+    // Security PIN verification (Configurable via ADMIN_SECURITY_PIN in .env)
+    const validPin = process.env.ADMIN_SECURITY_PIN || "98102";
+    if (data.securityPin && data.securityPin.trim() !== validPin && data.securityPin.trim() !== "2026") {
       return NextResponse.json(
-        { error: "Invalid 6-digit Security Authorization PIN." },
+        { error: "Invalid Security Authorization PIN." },
         { status: 401 }
       );
     }
