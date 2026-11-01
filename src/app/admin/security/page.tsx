@@ -5,7 +5,6 @@ import {
   Shield,
   ShieldCheck,
   Lock,
-  KeyRound,
   AlertTriangle,
   History,
   CheckCircle2,
@@ -74,8 +73,8 @@ export default async function AdminSecurityPage() {
             <span className="text-xs font-bold uppercase tracking-wider">Authentication Mode</span>
             <Lock className="w-4 h-4 text-blumac-copper" />
           </div>
-          <p className="text-lg font-bold text-blumac-navy">Direct Email &amp; Password</p>
-          <p className="text-[11px] text-emerald-600 font-medium">Single-Step Admin Clearance</p>
+          <p className="text-lg font-bold text-blumac-navy">Password Only</p>
+          <p className="text-[11px] text-emerald-600 font-medium">Direct Role-Based Clearance</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 border border-blumac-beige shadow-subtle space-y-2">
