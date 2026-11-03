@@ -32,11 +32,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export async function generateStaticParams() {
-  return PRODUCTS.map((product) => ({
-    slug: product.slug,
-  }));
-}
 
 export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params;

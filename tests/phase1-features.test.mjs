@@ -113,3 +113,4 @@ test("Phase 1 - 5. Wishlist Toggle & Persistence Logic", () => {
   list = toggleWishlistState(list, "cosrx-snail-96");
   assert.deepEqual(list, ["boj-relief-sun"], "Toggling existing item should remove it");
 });
+

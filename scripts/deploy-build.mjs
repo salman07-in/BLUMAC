@@ -24,3 +24,15 @@ if (dbUrl.startsWith("mysql://")) {
   console.log("ℹ️ Skipping auto-push: DATABASE_URL is not MySQL protocol.");
 }
 
+console.log("🌸 Generating Prisma Client...");
+execSync("npx prisma generate", { stdio: "inherit" });
+
+console.log("🌸 Starting Next.js Production Build (Single Worker Mode for Hostinger)...");
+execSync("npx next build", {
+  stdio: "inherit",
+  env: {
+    ...process.env,
+    NEXT_PRIVATE_MAX_WORKERS: "1",
+    UV_THREADPOOL_SIZE: "4",
+  },
+});

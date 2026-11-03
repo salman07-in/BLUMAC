@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0]?.message || "Validation error" }, { status: 400 });
+      return NextResponse.json({ error: (error as any).issues?.[0]?.message || (error as any).errors?.[0]?.message || "Validation error" }, { status: 400 });
     }
     console.error("[Review Submit Error]:", error);
     return NextResponse.json({ error: "Failed to submit review. Please try again." }, { status: 500 });

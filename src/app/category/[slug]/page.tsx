@@ -23,11 +23,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export async function generateStaticParams() {
-  return CATEGORIES.map((cat) => ({
-    slug: cat.slug,
-  }));
-}
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;

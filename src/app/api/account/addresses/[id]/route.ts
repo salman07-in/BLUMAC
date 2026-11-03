@@ -31,7 +31,7 @@ export async function PATCH(req: Request, { params }: RouteProps) {
     const address = await prisma.address.update({ where: { id }, data });
     return NextResponse.json({ success: true, address });
   } catch (error: any) {
-    if (error instanceof z.ZodError) return NextResponse.json({ error: error.errors[0]?.message }, { status: 400 });
+    if (error instanceof z.ZodError) return NextResponse.json({ error: (error as any).issues?.[0]?.message || (error as any).errors?.[0]?.message || "Validation error" }, { status: 400 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
