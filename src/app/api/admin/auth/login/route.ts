@@ -117,17 +117,22 @@ export async function POST(req: Request) {
     const msg = error?.message || "";
     const code = error?.code || "";
 
-    if (msg.includes("must start with the protocol")) {
+    if (
+      msg.includes("You must provide a nonempty URL") ||
+      msg.includes("must start with the protocol") ||
+      msg.includes("Validation Error Count") ||
+      !process.env.DATABASE_URL
+    ) {
       return NextResponse.json(
         {
           error:
-            "Database URL mismatch: Hostinger is using MySQL. Please ensure DATABASE_URL starts with 'mysql://username:password@localhost:3306/database_name'.",
+            "DATABASE_URL is missing or invalid on Hostinger. Please add DATABASE_URL in Hostinger Environment Variables: mysql://username:password@localhost:3306/database_name",
         },
         { status: 500 }
       );
     }
 
-    if (msg.includes("does not exist") || code === "P2021") {
+    if (msg.includes("does not exist") || msg.includes("Table") || code === "P2021") {
       return NextResponse.json(
         {
           error:
@@ -137,17 +142,17 @@ export async function POST(req: Request) {
       );
     }
 
-    if (code === "P1001") {
+    if (code === "P1001" || msg.includes("Can't reach database server")) {
       return NextResponse.json(
         {
           error:
-            "Cannot connect to database. Please check your DATABASE_URL in Hostinger environment variables.",
+            "Cannot connect to MySQL database at localhost:3306. Please check your DB credentials in Hostinger.",
         },
         { status: 500 }
       );
     }
 
-    if (code === "P1000") {
+    if (code === "P1000" || msg.includes("Authentication failed")) {
       return NextResponse.json(
         {
           error:
