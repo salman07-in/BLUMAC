@@ -117,11 +117,11 @@ export async function POST(req: Request) {
     const msg = error?.message || "";
     const code = error?.code || "";
 
-    if (msg.includes("must start with the protocol") || msg.includes("protocol `file:`")) {
+    if (msg.includes("must start with the protocol")) {
       return NextResponse.json(
         {
           error:
-            "Database URL mismatch: schema.prisma is set to SQLite, but a PostgreSQL/MySQL URL was provided in Hostinger .env. Run 'npx prisma db push --schema=prisma/schema.postgresql.prisma' on Hostinger.",
+            "Database URL mismatch: Hostinger is using MySQL. Please ensure DATABASE_URL starts with 'mysql://username:password@localhost:3306/database_name'.",
         },
         { status: 500 }
       );

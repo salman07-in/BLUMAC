@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -39,8 +39,8 @@ model CustomerProfile {
   loyaltyPoints Int      @default(0)
   referralCode  String   @unique
   referredBy    String?
-  skinType      String?
-  concerns      String?
+  skinType         String? @db.Text
+  concerns         String? @db.Text
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -72,7 +72,7 @@ model Brand {
   slug        String    @unique
   origin      String    @default("Seoul, South Korea")
   tagline     String?
-  description String?
+  description      String? @db.Text
   logo        String?
   createdAt   DateTime  @default(now())
   products    Product[]
@@ -83,7 +83,7 @@ model Category {
   id          String    @id @default(cuid())
   name        String    @unique
   slug        String    @unique
-  description String?
+  description      String? @db.Text
   image       String?
   createdAt   DateTime  @default(now())
   products    Product[]
@@ -99,19 +99,19 @@ model Product {
   categoryId       String?
   category         Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   subcategory      String?
-  shortDescription String
-  description      String
+  shortDescription String @db.Text
+  description      String @db.Text
   price            Float
   mrp              Float
   rating           Float            @default(5.0)
   reviewCount      Int              @default(0)
-  images           String // JSON stringified array of image URLs
-  skinType         String // JSON stringified array
-  concerns         String // JSON stringified array
-  keyIngredients   String // JSON stringified array of {name, benefit}
-  fullIngredients  String
-  howToUse         String
-  cautions         String?
+  images           String @db.Text // JSON stringified array of image URLs
+  skinType         String @db.Text // JSON stringified array
+  concerns         String @db.Text // JSON stringified array
+  keyIngredients   String @db.Text // JSON stringified array of {name, benefit}
+  fullIngredients  String @db.Text
+  howToUse         String @db.Text
+  cautions         String? @db.Text
   status           String           @default("ACTIVE") // ACTIVE, DRAFT, ARCHIVED
   isBestSeller     Boolean          @default(false)
   isNewArrival     Boolean          @default(false)
@@ -207,7 +207,7 @@ model Order {
   customerName    String
   customerEmail   String
   customerPhone   String
-  shippingAddress String // JSON stringified address details
+  shippingAddress String @db.Text // JSON stringified address details
   subtotal        Float
   discountTotal   Float              @default(0)
   shippingFee     Float              @default(0)
@@ -219,7 +219,7 @@ model Order {
   couponCode      String?
   trackingNumber  String?
   courierName     String?
-  notes           String?
+  notes           String? @db.Text
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
@@ -261,7 +261,7 @@ model Payment {
   amount            Float
   status            String // PENDING, SUCCESS, FAILED, REFUNDED
   signatureVerified Boolean  @default(false)
-  gatewayResponse   String? // JSON stringified webhook payload
+  gatewayResponse   String? @db.Text // JSON stringified webhook payload
   createdAt         DateTime @default(now())
 
   @@index([orderId])
@@ -332,7 +332,7 @@ model Review {
   customerName       String
   rating             Int      @default(5)
   title              String?
-  comment            String
+  comment            String @db.Text
   isVerifiedPurchase Boolean  @default(true)
   isApproved         Boolean  @default(false)
   createdAt          DateTime @default(now())
@@ -377,7 +377,7 @@ model NotificationLog {
   event            String // ORDER_PLACED, SHIPPED, DELIVERED, ABANDONED_CART
   recipient        String
   status           String // SENT, FAILED, DELIVERED
-  providerResponse String?
+  providerResponse String? @db.Text
   createdAt        DateTime @default(now())
 
   @@index([channel])
@@ -389,8 +389,8 @@ model AIJob {
   id           String    @id @default(cuid())
   type         String // CREATIVE_GENERATION, COPY_DRAFT, SEO_ENHANCE, TRANSLATION
   status       String    @default("COMPLETED") // PENDING, COMPLETED, FAILED, APPROVED, REJECTED
-  inputData    String // JSON input
-  outputData   String // JSON output
+  inputData    String @db.Text // JSON input
+  outputData   String @db.Text // JSON output
   costEstimate Float     @default(0.0)
   createdAt    DateTime  @default(now())
   assets       AIAsset[]
@@ -413,7 +413,7 @@ model AIAsset {
 model StoreSettings {
   id        String   @id @default(cuid())
   key       String   @unique
-  value     String
+  value     String @db.Text
   updatedAt DateTime @updatedAt
 }
 
@@ -424,7 +424,7 @@ model AuditLog {
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   action    String
   resource  String
-  details   String?
+  details   String? @db.Text
   createdAt DateTime @default(now())
 
   @@index([action])
