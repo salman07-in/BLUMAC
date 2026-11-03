@@ -1,19 +1,26 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireAdmin } from "@/lib/auth";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const coupons = await prisma.coupon.findMany({
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(coupons);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const isAuthErr = error.message?.includes("Unauthorized");
+    return NextResponse.json(
+      { error: error.message || "Failed to fetch coupons" },
+      { status: isAuthErr ? 401 : 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
+    await requireAdmin();
     const body = await req.json();
     const {
       code,
@@ -38,9 +45,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, coupon });
   } catch (error: any) {
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "Failed to create coupon" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

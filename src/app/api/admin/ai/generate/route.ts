@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { generateProductCopy } from "@/lib/ai/provider";
+import { requireAdmin } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
+    await requireAdmin();
     const body = await req.json();
     const {
       productName,
@@ -50,9 +52,10 @@ export async function POST(req: Request) {
       costEstimate: result.costEstimate,
     });
   } catch (error: any) {
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "AI Studio generation failed" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

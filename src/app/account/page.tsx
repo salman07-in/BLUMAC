@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Heart,
-  MapPin,
   Sparkles,
   LogOut,
   ShieldCheck,

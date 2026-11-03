@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, HelpCircle, ShieldCheck } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);

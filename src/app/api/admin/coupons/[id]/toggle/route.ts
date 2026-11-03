@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireAdmin } from "@/lib/auth";
 
 interface RouteProps {
   params: Promise<{ id: string }>;
@@ -7,6 +8,7 @@ interface RouteProps {
 
 export async function PATCH(req: Request, { params }: RouteProps) {
   try {
+    await requireAdmin();
     const { id } = await params;
     const body = await req.json();
     const { isActive } = body;
@@ -18,9 +20,10 @@ export async function PATCH(req: Request, { params }: RouteProps) {
 
     return NextResponse.json({ success: true, coupon });
   } catch (error: any) {
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "Failed to update coupon status" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

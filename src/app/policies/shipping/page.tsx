@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Truck, Clock, ShieldCheck, MapPin } from "lucide-react";
+import { Truck, Clock, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

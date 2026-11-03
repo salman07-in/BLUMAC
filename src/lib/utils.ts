@@ -48,3 +48,16 @@ export function formatDate(date: string | Date): string {
     year: "numeric",
   });
 }
+
+/**
+ * Safely parse JSON strings with typed fallback
+ */
+export function safeJsonParse<T>(value: any, fallback: T): T {
+  if (!value) return fallback;
+  if (typeof value === "object") return value as T;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
+}

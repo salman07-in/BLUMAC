@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireAdmin } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
+    await requireAdmin();
     const body = await req.json();
     let targetInventoryId = body.inventoryId;
     const delta = body.quantityDelta ?? body.changeQuantity ?? 0;
@@ -54,9 +56,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, inventory });
   } catch (error: any) {
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "Failed to adjust inventory" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

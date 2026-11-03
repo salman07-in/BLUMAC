@@ -17,7 +17,6 @@ import {
   BarChart3,
   Shield,
   ShieldCheck,
-  ExternalLink,
 } from "lucide-react";
 
 export function AdminSidebar() {

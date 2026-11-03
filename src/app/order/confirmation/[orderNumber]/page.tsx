@@ -2,15 +2,12 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, safeJsonParse } from "@/lib/utils";
 import {
   CheckCircle2,
   Truck,
   MapPin,
-  Calendar,
-  Printer,
   ArrowRight,
-  ShieldCheck,
   Package,
 } from "lucide-react";
 import { InvoicePrintButton } from "@/components/checkout/InvoicePrintButton";
@@ -38,7 +35,7 @@ export default async function OrderConfirmationPage({
     notFound();
   }
 
-  const shippingAddr = JSON.parse(order.shippingAddress || "{}");
+  const shippingAddr = safeJsonParse<Record<string, any>>(order.shippingAddress, {});
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">

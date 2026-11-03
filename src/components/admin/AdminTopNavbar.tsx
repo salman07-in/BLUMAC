@@ -4,13 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ShieldCheck,
   ExternalLink,
   LogOut,
   Bell,
-  CheckCircle2,
   AlertTriangle,
-  User,
 } from "lucide-react";
 
 interface AdminTopNavbarProps {

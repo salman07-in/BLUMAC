@@ -1,15 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import {
   TrendingUp,
   ShoppingBag,
-  Clock,
   CheckCircle2,
   AlertTriangle,
   Sparkles,
-  ArrowRight,
   Package,
   Tag,
   Truck,
@@ -31,9 +29,6 @@ export default async function AdminDashboardPage() {
   const pendingOrders = await prisma.order.count({
     where: { status: { in: ["PENDING", "CONFIRMED", "PROCESSING"] } },
   });
-  const deliveredOrders = await prisma.order.count({
-    where: { status: "DELIVERED" },
-  });
 
   const allOrders = await prisma.order.findMany({
     select: { grandTotal: true },
@@ -41,7 +36,6 @@ export default async function AdminDashboardPage() {
   const totalRevenue = allOrders.reduce((sum, o) => sum + o.grandTotal, 0);
   const aov = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
 
-  const totalProducts = await prisma.product.count();
   const lowStockCount = await prisma.inventory.count({
     where: { quantityOnHand: { lte: 10 } },
   });

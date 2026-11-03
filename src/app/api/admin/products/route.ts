@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const products = await prisma.product.findMany({
       include: {
         brand: true,
@@ -14,13 +15,17 @@ export async function GET() {
     });
     return NextResponse.json(products);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const isAuthErr = error.message?.includes("Unauthorized");
+    return NextResponse.json(
+      { error: error.message || "Failed to fetch products" },
+      { status: isAuthErr ? 401 : 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
+    const user = await requireAdmin();
     const body = await req.json();
 
     const {
@@ -132,9 +137,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, product });
   } catch (error: any) {
     console.error("Create product error:", error);
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "Failed to create product" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

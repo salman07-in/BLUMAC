@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 
 interface RawProductInput {
   name: string;
@@ -20,7 +20,7 @@ interface RawProductInput {
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
+    const user = await requireAdmin();
     const body = await req.json();
     const { items, defaultCategoryId, defaultBrandId } = body;
 
@@ -222,9 +222,10 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error("Bulk import critical error:", error);
+    const isAuthErr = error.message?.includes("Unauthorized");
     return NextResponse.json(
       { error: error.message || "Failed to process bulk import" },
-      { status: 500 }
+      { status: isAuthErr ? 401 : 500 }
     );
   }
 }

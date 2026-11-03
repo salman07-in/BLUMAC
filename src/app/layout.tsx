@@ -20,6 +20,7 @@ const serifFont = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://blumac.in"),
   title: "BLUMAC Korean Store | Premium Korean Skincare & Cosmetics Delivered Across India",
   description:
     "Shop authentic Korean skincare and cosmetics at BLUMAC. Direct imports from Seoul: COSRX, Beauty of Joseon, Anua, Laneige & more with fast All-India delivery.",

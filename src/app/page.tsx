@@ -16,7 +16,6 @@ import {
 import { CATEGORIES, BRANDS } from "@/lib/products";
 import { getStoreBestSellers, getStoreTrending } from "@/lib/catalog";
 import { ProductCard } from "@/components/storefront/ProductCard";
-import { BlumacLogo } from "@/components/common/BlumacLogo";
 
 export const dynamic = "force-dynamic";
 

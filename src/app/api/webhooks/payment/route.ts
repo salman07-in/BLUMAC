@@ -26,7 +26,14 @@ export async function POST(req: Request) {
         );
       }
     } else {
-      // In local dev/test mode without live webhook keys
+      // Guard against unverified webhooks in production
+      if (process.env.NODE_ENV === "production") {
+        return NextResponse.json(
+          { error: "Webhook signature secret unconfigured on production server." },
+          { status: 500 }
+        );
+      }
+      // Allowed in development / local testing
       isVerified = true;
     }
 

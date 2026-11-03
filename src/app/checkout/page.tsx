@@ -13,7 +13,6 @@ import {
   Tag,
   CreditCard,
   Banknote,
-  Sparkles,
   ShoppingBag,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -413,6 +412,19 @@ export default function CheckoutPage() {
                   ))}
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-blumac-navy mb-1">
+                Delivery Instructions / Order Notes (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Leave with security / Call upon arrival"
+                value={orderNotes}
+                onChange={(e) => setOrderNotes(e.target.value)}
+                className="w-full bg-blumac-ivory border border-blumac-beige rounded-lg px-3 py-2 text-xs text-blumac-navy focus:outline-none focus:border-blumac-copper"
+              />
             </div>
 
             <div className="p-3 bg-blumac-ivory rounded-lg border border-blumac-beige text-[11px] text-blumac-slate flex items-center gap-2">

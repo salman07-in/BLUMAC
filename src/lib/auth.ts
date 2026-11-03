@@ -1,6 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/db";
 
 const JWT_SECRET_STRING =
   process.env.JWT_SECRET || "blumac-korean-store-default-jwt-secret-key-32chars";

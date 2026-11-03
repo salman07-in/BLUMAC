@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireAdmin } from "@/lib/auth";
 
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await requireAdmin();
     const { id } = await params;
     const { field, value } = await req.json();
 
@@ -22,6 +24,10 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, product: updated });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const isAuthErr = error.message?.includes("Unauthorized");
+    return NextResponse.json(
+      { error: error.message || "Failed to update badge" },
+      { status: isAuthErr ? 401 : 500 }
+    );
   }
 }

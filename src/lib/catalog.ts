@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { PRODUCTS, Product, CATEGORIES, BRANDS } from "@/lib/products";
+import { PRODUCTS, Product } from "@/lib/products";
 
 export function mapDbProduct(p: any): Product {
   let images: string[] = [];

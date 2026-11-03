@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { RotateCcw, AlertTriangle, CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
