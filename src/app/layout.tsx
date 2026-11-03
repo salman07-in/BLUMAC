@@ -19,8 +19,23 @@ const serifFont = Playfair_Display({
   weight: ["500", "600", "700", "800", "900"],
 });
 
+function getMetadataBase(): URL {
+  const envUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (envUrl && (envUrl.startsWith("http://") || envUrl.startsWith("https://"))) {
+    try {
+      const parsed = new URL(envUrl);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed;
+      }
+    } catch {
+      // Invalid URL provided in environment, fall back safely
+    }
+  }
+  return new URL("https://blumac.in");
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://blumac.in"),
+  metadataBase: getMetadataBase(),
   title: "BLUMAC Korean Store | Premium Korean Skincare & Cosmetics Delivered Across India",
   description:
     "Shop authentic Korean skincare and cosmetics at BLUMAC. Direct imports from Seoul: COSRX, Beauty of Joseon, Anua, Laneige & more with fast All-India delivery.",
