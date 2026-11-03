@@ -12,6 +12,8 @@ import {
   ChevronRight,
   Truck,
   Package,
+  Edit3,
+  MapPin,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -82,7 +84,15 @@ export default function AccountPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <Link
+            href="/account/profile"
+            className="px-5 py-2.5 bg-blumac-copper hover:bg-blumac-copperLight text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Profile & Addresses</span>
+          </Link>
+
           {user?.role === "ADMIN" && (
             <Link
               href="/admin"
@@ -104,7 +114,7 @@ export default function AccountPage() {
       </div>
 
       {/* Account Highlights Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Loyalty Points */}
         <div className="bg-gradient-to-br from-blumac-navy to-blumac-navyDark text-white p-6 rounded-2xl border border-blumac-copper/40 shadow-subtle space-y-2">
           <div className="flex items-center justify-between">
@@ -138,7 +148,24 @@ export default function AccountPage() {
           </Link>
         </div>
 
-        {/* Saved Addresses / Wishlist */}
+        {/* Saved Addresses */}
+        <div className="bg-white p-6 rounded-2xl border border-blumac-beige shadow-subtle space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-widest text-blumac-slate">
+              Delivery Addresses
+            </span>
+            <MapPin className="w-4 h-4 text-blumac-copper" />
+          </div>
+          <p className="text-3xl font-extrabold font-serif text-blumac-navy">Book</p>
+          <Link
+            href="/account/profile"
+            className="text-[11px] font-semibold text-blumac-copper hover:underline block"
+          >
+            Manage Saved Addresses &rarr;
+          </Link>
+        </div>
+
+        {/* Saved Wishlist */}
         <div className="bg-white p-6 rounded-2xl border border-blumac-beige shadow-subtle space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-widest text-blumac-slate">

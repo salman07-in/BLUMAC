@@ -28,6 +28,9 @@ export default function WishlistPage() {
             <Heart className="w-6 h-6 text-red-500 fill-red-500" />
             <span>My Skincare Wishlist ({wishlistedProducts.length})</span>
           </h1>
+          <p className="text-xs text-blumac-slate mt-1">
+            💾 Your wishlist is automatically saved to your account across all devices.
+          </p>
         </div>
 
         <Link

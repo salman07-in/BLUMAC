@@ -57,6 +57,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const [reviewName, setReviewName] = useState("");
   const [reviewComment, setReviewComment] = useState("");
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
 
   const discount = calculateDiscount(product.mrp, product.price);
   const inWish = isInWishlist(product.id);
@@ -123,12 +125,40 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     }
   };
 
-  const handleReviewSubmit = (e: React.FormEvent) => {
+  const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reviewName.trim() || !reviewComment.trim()) return;
-    setReviewSubmitted(true);
-    setReviewComment("");
-    setReviewName("");
+    if (reviewComment.trim().length < 10) {
+      setReviewError("Review must be at least 10 characters.");
+      return;
+    }
+    setReviewSubmitting(true);
+    setReviewError(null);
+    try {
+      const res = await fetch("/api/reviews/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          customerName: reviewName.trim(),
+          rating: reviewRating,
+          comment: reviewComment.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setReviewSubmitted(true);
+        setReviewComment("");
+        setReviewName("");
+        setReviewRating(5);
+      } else {
+        setReviewError(data.error || "Failed to submit review.");
+      }
+    } catch {
+      setReviewError("Network error. Please try again.");
+    } finally {
+      setReviewSubmitting(false);
+    }
   };
 
   const relatedProducts = PRODUCTS.filter(
@@ -629,12 +659,16 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 className="w-full bg-blumac-ivory border border-blumac-beige rounded-lg p-3 text-xs text-blumac-navy focus:outline-none focus:border-blumac-copper"
               />
 
-              <button
-                type="submit"
-                className="px-6 py-2.5 bg-blumac-navy hover:bg-blumac-copper text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
-              >
-                Submit Review
-              </button>
+              {reviewError && (
+                  <p className="text-xs text-red-600 font-semibold">{reviewError}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={reviewSubmitting}
+                  className="px-6 py-2.5 bg-blumac-navy hover:bg-blumac-copper text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors disabled:opacity-60"
+                >
+                  {reviewSubmitting ? "Submitting..." : "Submit Review"}
+                </button>
             </form>
           )}
         </div>

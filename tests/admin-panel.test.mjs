@@ -88,3 +88,4 @@ test("Admin Products - 4. Safe Deletion & Order History Guard", () => {
   const productWithoutOrders = determineDeletionAction(0);
   assert.equal(productWithoutOrders.action, "PERMANENT_DELETE");
 });
+
