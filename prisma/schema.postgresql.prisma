@@ -234,6 +234,23 @@ model Order {
   @@index([status])
 }
 
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  variantId   String?
+  productName String
+  brandName   String
+  size        String?
+  unitPrice   Float
+  taxAmount   Float   @default(0)
+  quantity    Int
+  subtotal    Float
+
+  @@index([orderId])
+}
+
 // 11. Payments & Webhooks
 model Payment {
   id                String   @id @default(cuid())
