@@ -63,3 +63,4 @@ test("AI Product Studio - 3. Backward Compatible generateProductCopy wrapper", a
   assert.ok(result.copy.captions.hindi, "Hindi caption must be present");
   assert.ok(result.copy.captions.hinglish, "Hinglish caption must be present");
 });
+
