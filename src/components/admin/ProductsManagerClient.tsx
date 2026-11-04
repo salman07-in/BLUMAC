@@ -31,8 +31,10 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldAlert,
+  FolderPlus,
 } from "lucide-react";
 import { ProductBulkImportModal } from "./ProductBulkImportModal";
+import { CategoryManagerModal, CategoryItem } from "./CategoryManagerModal";
 
 interface ProductsManagerClientProps {
   initialProducts: any[];
@@ -46,6 +48,7 @@ export function ProductsManagerClient({
   categories,
 }: ProductsManagerClientProps) {
   const [products, setProducts] = useState<any[]>(initialProducts);
+  const [categoryList, setCategoryList] = useState<CategoryItem[]>(categories);
   const [search, setSearch] = useState("");
   const [filterMode, setFilterMode] = useState<
     "ALL" | "ACTIVE" | "ARCHIVED" | "BEST_SELLER" | "TRENDING" | "LOW_STOCK"
@@ -97,6 +100,58 @@ export function ProductsManagerClient({
   const [errorMsg, setErrorMsg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Category Management Modal State & Handlers
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [categoryModalMode, setCategoryModalMode] = useState<"create" | "manage">("create");
+  const [categoryModalSource, setCategoryModalSource] = useState<"addForm" | "editForm" | "topBar">("addForm");
+
+  const handleCategoryCreated = (newCat: CategoryItem) => {
+    setCategoryList((prev) => {
+      const exists = prev.some((c) => c.id === newCat.id);
+      if (exists) return prev.map((c) => (c.id === newCat.id ? newCat : c));
+      return [...prev, newCat].sort((a, b) => a.name.localeCompare(b.name));
+    });
+
+    if (categoryModalSource === "addForm") {
+      setCategoryId(newCat.id);
+    } else if (categoryModalSource === "editForm") {
+      setEditingProduct((prev: any) => (prev ? { ...prev, categoryId: newCat.id } : prev));
+    }
+  };
+
+  const handleCategoryUpdated = (updatedCat: CategoryItem) => {
+    setCategoryList((prev) =>
+      prev.map((c) => (c.id === updatedCat.id ? { ...c, ...updatedCat } : c))
+    );
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.categoryId === updatedCat.id
+          ? { ...p, category: { ...p.category, ...updatedCat } }
+          : p
+      )
+    );
+  };
+
+  const handleCategoryDeleted = (deletedId: string, reassignedToId?: string) => {
+    setCategoryList((prev) => prev.filter((c) => c.id !== deletedId));
+
+    if (categoryId === deletedId) {
+      const remaining = categoryList.filter((c) => c.id !== deletedId);
+      setCategoryId(remaining[0]?.id || "");
+    }
+
+    if (reassignedToId) {
+      const targetCat = categoryList.find((c) => c.id === reassignedToId);
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.categoryId === deletedId
+            ? { ...p, categoryId: reassignedToId, category: targetCat || p.category }
+            : p
+        )
+      );
+    }
+  };
 
   const showToast = (type: "success" | "error" | "info", message: string) => {
     setToastNotification({ type, message });
@@ -349,7 +404,7 @@ export function ProductsManagerClient({
             setProducts(refreshed);
           }
         } else if (action === "UPDATE_CATEGORY") {
-          const catObj = categories.find((c) => c.id === bulkCategoryTarget);
+          const catObj = categoryList.find((c) => c.id === bulkCategoryTarget);
           setProducts((prev) =>
             prev.map((p) =>
               selectedIds.includes(p.id)
@@ -747,6 +802,19 @@ export function ProductsManagerClient({
           </button>
 
           <button
+            type="button"
+            onClick={() => {
+              setCategoryModalSource("topBar");
+              setCategoryModalMode("manage");
+              setIsCategoryModalOpen(true);
+            }}
+            className="px-3 py-2 bg-blumac-ivory hover:bg-blumac-beige text-blumac-navy border border-blumac-beige rounded-lg font-bold flex items-center gap-1.5 transition-colors shadow-xs"
+          >
+            <FolderPlus className="w-3.5 h-3.5 text-blumac-copper" />
+            <span>Categories</span>
+          </button>
+
+          <button
             onClick={() => setIsAddModalOpen(true)}
             className="px-4 py-2 bg-blumac-navy hover:bg-blumac-copper text-white rounded-lg font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors shadow-sm"
           >
@@ -775,7 +843,7 @@ export function ProductsManagerClient({
                 className="bg-white/10 text-white border border-white/20 rounded px-2 py-1 text-xs"
               >
                 <option value="" className="text-black">Change Category...</option>
-                {categories.map((c) => (
+                {categoryList.map((c) => (
                   <option key={c.id} value={c.id} className="text-black">
                     {c.name}
                   </option>
@@ -1232,9 +1300,38 @@ export function ProductsManagerClient({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-bold text-blumac-navy mb-1">
-                        Category *
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block font-bold text-blumac-navy">
+                          Category *
+                        </label>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCategoryModalSource("editForm");
+                              setCategoryModalMode("create");
+                              setIsCategoryModalOpen(true);
+                            }}
+                            className="inline-flex items-center gap-0.5 text-[11px] font-bold text-blumac-copper hover:text-blumac-navy transition"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>+ Add</span>
+                          </button>
+                          <span className="text-blumac-beige">|</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCategoryModalSource("editForm");
+                              setCategoryModalMode("manage");
+                              setIsCategoryModalOpen(true);
+                            }}
+                            className="inline-flex items-center gap-0.5 text-[11px] text-blumac-slate hover:text-blumac-navy transition"
+                          >
+                            <Sliders className="w-3 h-3" />
+                            <span>Manage</span>
+                          </button>
+                        </div>
+                      </div>
                       <select
                         value={editingProduct.categoryId || ""}
                         onChange={(e) =>
@@ -1242,9 +1339,9 @@ export function ProductsManagerClient({
                         }
                         className="w-full bg-blumac-ivory border border-blumac-beige rounded-lg px-3 py-2 text-blumac-navy font-semibold cursor-pointer"
                       >
-                        {categories.map((c) => (
+                        {categoryList.map((c) => (
                           <option key={c.id} value={c.id}>
-                            {c.name}
+                            {c.name} {c.isActive === false ? "(Inactive)" : ""}
                           </option>
                         ))}
                       </select>
@@ -1725,17 +1822,46 @@ export function ProductsManagerClient({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-blumac-navy mb-1">
-                    Category *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-bold text-blumac-navy">
+                      Category *
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategoryModalSource("addForm");
+                          setCategoryModalMode("create");
+                          setIsCategoryModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-0.5 text-[11px] font-bold text-blumac-copper hover:text-blumac-navy transition"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Add</span>
+                      </button>
+                      <span className="text-blumac-beige">|</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategoryModalSource("addForm");
+                          setCategoryModalMode("manage");
+                          setIsCategoryModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-0.5 text-[11px] text-blumac-slate hover:text-blumac-navy transition"
+                      >
+                        <Sliders className="w-3 h-3" />
+                        <span>Manage</span>
+                      </button>
+                    </div>
+                  </div>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
                     className="w-full bg-blumac-ivory border border-blumac-beige rounded-lg px-3 py-2 text-blumac-navy font-semibold cursor-pointer"
                   >
-                    {categories.map((c) => (
+                    {categoryList.map((c) => (
                       <option key={c.id} value={c.id}>
-                        {c.name}
+                        {c.name} {c.isActive === false ? "(Inactive)" : ""}
                       </option>
                     ))}
                   </select>
@@ -1953,11 +2079,23 @@ export function ProductsManagerClient({
         </div>
       )}
 
+      {/* Category Manager Modal */}
+      <CategoryManagerModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categories={categoryList}
+        initialMode={categoryModalMode}
+        onCategoryCreated={handleCategoryCreated}
+        onCategoryUpdated={handleCategoryUpdated}
+        onCategoryDeleted={handleCategoryDeleted}
+        showToast={showToast}
+      />
+
       {/* Bulk CSV Import Modal */}
       <ProductBulkImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
-        categories={categories}
+        categories={categoryList}
         brands={brands}
         onImportSuccess={(newProducts) => {
           setProducts((prev) => [...newProducts, ...prev]);

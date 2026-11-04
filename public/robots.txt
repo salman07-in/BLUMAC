@@ -12,3 +12,4 @@ Content-Signal: search=yes, ai-train=no
 
 # Goal 4: Sitemap declared
 Sitemap: https://blumac.in/sitemap.xml
+
