@@ -4,6 +4,8 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { StoreFrontShell } from "@/components/layout/StoreFrontShell";
+import { StructuredData } from "@/components/common/StructuredData";
+import { WebMcpProvider } from "@/components/common/WebMcpProvider";
 
 const sansFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -36,6 +38,9 @@ function getMetadataBase(): URL {
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
+  alternates: {
+    canonical: "/",
+  },
   title: "BLUMAC Korean Store | Premium Korean Skincare & Cosmetics Delivered Across India",
   description:
     "Shop authentic Korean skincare and cosmetics at BLUMAC. Direct imports from Seoul: COSRX, Beauty of Joseon, Anua, Laneige & more with fast All-India delivery.",
@@ -49,6 +54,8 @@ export const metadata: Metadata = {
     "Authentic Korean skincare",
   ],
   openGraph: {
+    type: "website",
+    url: "https://blumac.in",
     title: "BLUMAC Korean Store | 100% Authentic Korean Skincare in India",
     description:
       "Direct from Seoul to your doorstep. Free delivery all over India on orders above ₹999.",
@@ -64,6 +71,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sansFont.variable} ${serifFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-blumac-ivory text-blumac-charcoal">
+        <StructuredData />
+        <WebMcpProvider />
         <CartProvider>
           <WishlistProvider>
             <StoreFrontShell>{children}</StoreFrontShell>

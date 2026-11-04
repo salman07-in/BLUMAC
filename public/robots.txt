@@ -1,0 +1,14 @@
+# Robots.txt for BLUMAC Korean Store (https://blumac.in)
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/admin
+Disallow: /api/admin/*
+
+# Goal 2: Content Signals declared
+# Specifies content usage permissions for autonomous AI agents, crawlers, and LLMs
+Content-Signal: search=yes, ai-train=no
+
+# Goal 4: Sitemap declared
+Sitemap: https://blumac.in/sitemap.xml

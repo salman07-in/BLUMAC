@@ -1,0 +1,81 @@
+# BLUMAC Korean Store (https://blumac.in)
+
+> BLUMAC is India's premier online store for 100% authentic Korean skincare and cosmetics, imported directly from Seoul, South Korea. We offer cult-favorite formulations scientifically proven to repair skin barriers, calm inflammation, and achieve Korean glass skin luminosity.
+
+## Key Facts for Autonomous Agents & LLMs
+
+- **Domain:** https://blumac.in
+- **Headquarters:** Mumbai, Maharashtra, India
+- **Currency:** Indian Rupee (INR, ₹)
+- **Shipping Policy:** Free express shipping across India on orders above ₹999. Flat ₹99 on orders below ₹999.
+- **Logistics Partners:** BlueDart Express Air, Delhivery, DTDC, Xpressbees (Avg delivery 2-4 business days).
+- **Payment Methods:** Cash on Delivery (COD), UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, Net Banking via Razorpay.
+- **Authentication:** All products feature genuine authenticity seals, batch codes, and holographic verification.
+- **Support Contact:** care@blumac.in | WhatsApp / Tel: +91-9820098200
+
+## Core Navigation & Endpoints
+
+- **Homepage:** https://blumac.in/
+- **Full Catalog:** https://blumac.in/shop
+- **Top Brands:** https://blumac.in/brands
+- **Special Offers & Combos:** https://blumac.in/offers
+- **Product Search API:** https://blumac.in/api/search?q={query}
+- **MCP Server Card:** https://blumac.in/.well-known/mcp/server-card.json
+- **Sitemap:** https://blumac.in/sitemap.xml
+- **Robots Policy:** https://blumac.in/robots.txt (Content-Signal: search=yes, ai-train=no)
+
+## Primary Skincare Categories
+
+- **Cleansers:** https://blumac.in/category/cleansers (Low pH foaming gels, cleansing oils, micellar waters)
+- **Toners & Essences:** https://blumac.in/category/toners-essences (Heartleaf soothing toners, rice toners, hydrating essences)
+- **Serums & Ampoules:** https://blumac.in/category/serums-ampoules (Snail mucin 96%, propolis niacinamide, centella, hyaluronic acid)
+- **Moisturizers:** https://blumac.in/category/moisturizers (Barrier creams, gel-creams, lip sleeping masks)
+- **Sunscreens:** https://blumac.in/category/sunscreens (SPF50+ PA++++ chemical & mineral sunscreens, zero white cast)
+
+## Best-Selling Korean Products & Current Prices
+
+1. **COSRX Advanced Snail 96 Mucin Power Essence (100ml)**
+   - Brand: COSRX
+   - Price: ₹1,199 (MRP: ₹1,450, 17% OFF)
+   - URL: https://blumac.in/product/cosrx-advanced-snail-96-mucin-power-essence
+   - Key Ingredients: 96.3% Snail Secretion Filtrate, Sodium Hyaluronate, Panthenol, Allantoin.
+
+2. **Beauty of Joseon Relief Sun: Rice + Probiotics SPF50+ PA++++ (50ml)**
+   - Brand: Beauty of Joseon
+   - Price: ₹1,250 (MRP: ₹1,550, 19% OFF)
+   - URL: https://blumac.in/product/beauty-of-joseon-relief-sun-rice-probiotics-spf50
+   - Key Ingredients: Rice Extract 30%, Grain Fermented Extracts, Niacinamide.
+
+3. **Anua Heartleaf 77% Soothing Toner (250ml)**
+   - Brand: Anua
+   - Price: ₹1,650 (MRP: ₹1,950, 15% OFF)
+   - URL: https://blumac.in/product/anua-heartleaf-77-soothing-toner
+   - Key Ingredients: 77% Houttuynia Cordata Extract, Panthenol, Centella Asiatica.
+
+4. **Laneige Lip Sleeping Mask Berry (20g)**
+   - Brand: Laneige
+   - Price: ₹550 (MRP: ₹600, 8% OFF)
+   - URL: https://blumac.in/product/laneige-lip-sleeping-mask-berry
+   - Key Ingredients: Berry Fruit Complex, Vitamin C, Coconut Oil.
+
+5. **Torriden Dive-In Low Molecular Hyaluronic Acid Serum (50ml)**
+   - Brand: Torriden
+   - Price: ₹1,599 (MRP: ₹1,850, 14% OFF)
+   - URL: https://blumac.in/product/torriden-dive-in-low-molecular-hyaluronic-acid-serum
+   - Key Ingredients: 5D Multi-Hyaluronic Acid Complex, D-Panthenol, Allantoin.
+
+6. **SKIN1004 Madagascar Centella Ampoule (100ml)**
+   - Brand: SKIN1004
+   - Price: ₹1,499 (MRP: ₹1,750, 14% OFF)
+   - URL: https://blumac.in/product/skin1004-madagascar-centella-ampoule
+   - Key Ingredients: 100% Centella Asiatica Extract from Madagascar.
+
+## Policies & Compliance
+
+- **About Us:** https://blumac.in/policies/about
+- **Customer Care & Help:** https://blumac.in/policies/contact
+- **Frequently Asked Questions:** https://blumac.in/policies/faq
+- **Shipping & Delivery:** https://blumac.in/policies/shipping
+- **Returns & Refunds:** https://blumac.in/policies/returns
+- **Privacy Policy (DPDP & GDPR):** https://blumac.in/policies/privacy
+- **Terms of Service:** https://blumac.in/policies/terms

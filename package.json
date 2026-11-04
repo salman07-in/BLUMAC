@@ -13,7 +13,7 @@
     "db:generate:mysql": "prisma generate --schema=prisma/schema.prisma",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.mjs",
-    "test": "node --test --experimental-strip-types tests/ecommerce.test.mjs tests/ai-studio.test.mjs tests/admin-panel.test.mjs tests/phase1-features.test.mjs",
+    "test": "node --test --experimental-strip-types tests/ecommerce.test.mjs tests/ai-studio.test.mjs tests/admin-panel.test.mjs tests/phase1-features.test.mjs tests/agent-ready.test.mjs",
     "test:integration": "node scripts/comprehensive-local-test.mjs"
   },
   "dependencies": {

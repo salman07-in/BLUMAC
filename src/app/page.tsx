@@ -534,6 +534,54 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 8. ACCESSIBLE PRICING & CATALOG DIRECTORY (REACHABLE WITHOUT JS) */}
+      <section
+        aria-label="Authentic Korean Skincare Pricing and Catalog Directory"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 border-t border-blumac-beige/80"
+      >
+        <div className="bg-white/80 rounded-2xl p-6 sm:p-8 border border-blumac-beige shadow-subtle space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h2 className="text-sm font-bold text-blumac-navy uppercase tracking-wider">
+                Direct Pricing & Availability Directory (INR)
+              </h2>
+              <p className="text-xs text-blumac-slate">
+                100% Genuine Korean skincare imported from Seoul. Prices in Indian Rupees (INR) inclusive of all taxes. Free delivery over ₹999.
+              </p>
+            </div>
+            <Link
+              href="/shop"
+              className="text-xs font-bold text-blumac-copper hover:underline flex items-center gap-1"
+            >
+              <span>Explore Complete Catalog</span> &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-2">
+            {bestSellers.map((item) => (
+              <Link
+                key={item.id}
+                href={`/product/${item.slug}`}
+                className="p-3 rounded-lg bg-blumac-ivory/60 hover:bg-blumac-ivory border border-blumac-beige/60 flex items-center justify-between transition-colors"
+              >
+                <div className="truncate mr-2">
+                  <p className="font-bold text-blumac-navy truncate">{item.name}</p>
+                  <p className="text-[10px] text-blumac-copper uppercase font-semibold">{item.brand}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="font-extrabold text-blumac-navy">₹{item.price.toLocaleString("en-IN")}</span>
+                  {item.mrp > item.price && (
+                    <span className="block text-[10px] text-blumac-slate line-through">
+                      ₹{item.mrp.toLocaleString("en-IN")}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

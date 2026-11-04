@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json.schemastore.org/mcp-server-card.json",
+  "name": "blumac-korean-store",
+  "displayName": "BLUMAC Korean Store MCP Server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for BLUMAC Korean Store - Search authentic Korean skincare products, check stock, verify prices in INR, and track orders across India.",
+  "homepage": "https://blumac.in",
+  "endpoint": "https://blumac.in/api/mcp",
+  "transport": "sse",
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false
+  },
+  "tools": [
+    {
+      "name": "search_products",
+      "description": "Search Korean skincare catalog by product name, active ingredient, brand or category in India.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search term, e.g. snail mucin, sunscreen, centella, toner"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of products to return (default: 10)"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_product_price_and_stock",
+      "description": "Get current selling price, MRP, discount percentage, and real-time inventory status in Indian Rupees (INR).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Product slug, e.g. cosrx-advanced-snail-96-mucin-power-essence"
+          }
+        },
+        "required": ["slug"]
+      }
+    },
+    {
+      "name": "check_pincode_serviceability",
+      "description": "Check BlueDart & Delhivery courier delivery SLA and COD availability for an Indian 6-digit PIN code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pincode": {
+            "type": "string",
+            "description": "6-digit Indian PIN code, e.g. 400076, 110001, 560001"
+          }
+        },
+        "required": ["pincode"]
+      }
+    }
+  ]
+}

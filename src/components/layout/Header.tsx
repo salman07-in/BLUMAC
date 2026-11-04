@@ -69,7 +69,14 @@ export function Header() {
 
           {/* Desktop Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
-            <form onSubmit={handleSearchSubmit} className="relative w-full">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative w-full"
+              {...({
+                toolname: "search_korean_skincare",
+                tooldescription: "Search 100% authentic Korean skincare products by name, active ingredient, brand or skin concern",
+              } as any)}
+            >
               <input
                 type="text"
                 placeholder="Search Korean skincare, snail mucin, sunscreen..."
@@ -136,7 +143,14 @@ export function Header() {
         {/* Mobile Search Bar Expansion */}
         {searchOpen && (
           <div className="md:hidden pb-3">
-            <form onSubmit={handleSearchSubmit} className="relative w-full">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative w-full"
+              {...({
+                toolname: "search_korean_skincare",
+                tooldescription: "Search 100% authentic Korean skincare products by name, active ingredient, brand or skin concern",
+              } as any)}
+            >
               <input
                 type="text"
                 placeholder="Search Korean skincare..."
