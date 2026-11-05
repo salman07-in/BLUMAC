@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -82,6 +82,19 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const [isCodEnabled, setIsCodEnabled] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/store/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.enableCod !== undefined) {
+          setIsCodEnabled(data.enableCod !== false);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const handleBuyNow = () => {
     addToCart(
       {
@@ -113,8 +126,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
         valid: true,
         message: `Serviceable to PIN ${cleanPin}`,
         estimate: isMetro
-          ? "Express Delivery in 2 - 3 business days • COD Available"
-          : "Standard Delivery in 3 - 5 business days • COD Available",
+          ? `Express Delivery in 2 - 3 business days${isCodEnabled ? " • COD Available" : ""}`
+          : `Standard Delivery in 3 - 5 business days${isCodEnabled ? " • COD Available" : ""}`,
       });
     } else {
       setPinStatus({

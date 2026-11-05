@@ -37,6 +37,50 @@ export async function POST(req: Request) {
 
     const user = await getCurrentUser();
 
+    // Validate Payment Gateway Active Status in Store Settings
+    const gatewaySettings = await prisma.storeSettings.findMany({
+      where: {
+        key: { in: ["enable_razorpay", "enable_cod"] },
+      },
+    });
+    const gatewayMap: Record<string, string> = {};
+    gatewaySettings.forEach((s) => {
+      gatewayMap[s.key] = s.value;
+    });
+
+    const isRazorpayEnabled = gatewayMap.enable_razorpay !== "false";
+    const isCodEnabled = gatewayMap.enable_cod !== "false";
+
+    if (data.paymentMethod === "COD" && !isCodEnabled) {
+      return NextResponse.json(
+        {
+          error:
+            "Cash on Delivery (COD) is temporarily disabled by store administration. Please select Online Payment.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (data.paymentMethod === "RAZORPAY" && !isRazorpayEnabled) {
+      return NextResponse.json(
+        {
+          error:
+            "Online Payment (Razorpay) is temporarily disabled by store administration. Please select Cash on Delivery.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!isCodEnabled && !isRazorpayEnabled) {
+      return NextResponse.json(
+        {
+          error:
+            "Checkout is temporarily paused by store administration. Please contact customer support.",
+        },
+        { status: 400 }
+      );
+    }
+
     // 1. Fetch products from database to ensure SERVER-SIDE PRICE VALIDATION
     // Never trust client-submitted prices!
     const candidateKeys = Array.from(

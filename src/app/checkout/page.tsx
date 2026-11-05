@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import {
   CreditCard,
   Banknote,
   ShoppingBag,
+  AlertTriangle,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatCurrency } from "@/lib/utils";
@@ -80,6 +81,44 @@ export default function CheckoutPage() {
   const [pinCode, setPinCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "RAZORPAY">("RAZORPAY");
   const [orderNotes, setOrderNotes] = useState("");
+
+  const [gatewayStatus, setGatewayStatus] = useState<{
+    enableRazorpay: boolean;
+    enableCod: boolean;
+    loading: boolean;
+  }>({
+    enableRazorpay: true,
+    enableCod: true,
+    loading: true,
+  });
+
+  useEffect(() => {
+    fetch("/api/store/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        const rz = data.enableRazorpay !== false;
+        const cd = data.enableCod !== false;
+        setGatewayStatus({
+          enableRazorpay: rz,
+          enableCod: cd,
+          loading: false,
+        });
+
+        // Set default selection based on active gateways
+        if (!rz && cd) {
+          setPaymentMethod("COD");
+        } else if (rz && !cd) {
+          setPaymentMethod("RAZORPAY");
+        }
+      })
+      .catch(() => {
+        setGatewayStatus({
+          enableRazorpay: true,
+          enableCod: true,
+          loading: false,
+        });
+      });
+  }, []);
 
   const [couponInput, setCouponInput] = useState("");
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
@@ -445,30 +484,51 @@ export default function CheckoutPage() {
             </h2>
 
             <div className="space-y-3">
+              {/* Alert if both gateways are disabled */}
+              {!gatewayStatus.enableRazorpay && !gatewayStatus.enableCod && !gatewayStatus.loading && (
+                <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
+                  <span>
+                    All payment gateways are temporarily paused by store administration. Please contact customer care to place an order.
+                  </span>
+                </div>
+              )}
+
               {/* Razorpay Online */}
               <label
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  paymentMethod === "RAZORPAY"
-                    ? "border-blumac-copper bg-blumac-copper/5"
-                    : "border-blumac-beige hover:border-blumac-slate"
+                className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${
+                  !gatewayStatus.enableRazorpay
+                    ? "opacity-50 border-gray-200 bg-gray-50/60 cursor-not-allowed"
+                    : paymentMethod === "RAZORPAY"
+                    ? "border-blumac-copper bg-blumac-copper/5 cursor-pointer"
+                    : "border-blumac-beige hover:border-blumac-slate cursor-pointer"
                 }`}
               >
                 <input
                   type="radio"
                   name="paymentOption"
-                  checked={paymentMethod === "RAZORPAY"}
-                  onChange={() => setPaymentMethod("RAZORPAY")}
+                  disabled={!gatewayStatus.enableRazorpay}
+                  checked={paymentMethod === "RAZORPAY" && gatewayStatus.enableRazorpay}
+                  onChange={() => {
+                    if (gatewayStatus.enableRazorpay) setPaymentMethod("RAZORPAY");
+                  }}
                   className="mt-0.5 accent-blumac-copper"
                 />
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <CreditCard className="w-4 h-4 text-blumac-copper" />
                     <span className="text-xs font-bold text-blumac-navy">
                       Online Payment (Instant UPI / Cards / NetBanking)
                     </span>
-                    <span className="bg-blumac-forest/10 text-blumac-forest text-[9px] font-bold px-1.5 py-0.5 rounded border border-blumac-forest/20">
-                      Recommended
-                    </span>
+                    {gatewayStatus.enableRazorpay ? (
+                      <span className="bg-blumac-forest/10 text-blumac-forest text-[9px] font-bold px-1.5 py-0.5 rounded border border-blumac-forest/20">
+                        Recommended
+                      </span>
+                    ) : (
+                      <span className="bg-gray-200 text-gray-700 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                        Temporarily Unavailable
+                      </span>
+                    )}
                   </div>
                   <p className="text-[11px] text-blumac-slate mt-0.5">
                     Supports Google Pay, PhonePe, Paytm, RuPay, Visa, MasterCard &amp; NetBanking.
@@ -478,25 +538,35 @@ export default function CheckoutPage() {
 
               {/* Cash on Delivery (COD) */}
               <label
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  paymentMethod === "COD"
-                    ? "border-blumac-copper bg-blumac-copper/5"
-                    : "border-blumac-beige hover:border-blumac-slate"
+                className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${
+                  !gatewayStatus.enableCod
+                    ? "opacity-50 border-gray-200 bg-gray-50/60 cursor-not-allowed"
+                    : paymentMethod === "COD"
+                    ? "border-blumac-copper bg-blumac-copper/5 cursor-pointer"
+                    : "border-blumac-beige hover:border-blumac-slate cursor-pointer"
                 }`}
               >
                 <input
                   type="radio"
                   name="paymentOption"
-                  checked={paymentMethod === "COD"}
-                  onChange={() => setPaymentMethod("COD")}
+                  disabled={!gatewayStatus.enableCod}
+                  checked={paymentMethod === "COD" && gatewayStatus.enableCod}
+                  onChange={() => {
+                    if (gatewayStatus.enableCod) setPaymentMethod("COD");
+                  }}
                   className="mt-0.5 accent-blumac-copper"
                 />
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Banknote className="w-4 h-4 text-blumac-copper" />
                     <span className="text-xs font-bold text-blumac-navy">
                       Cash on Delivery (COD)
                     </span>
+                    {!gatewayStatus.enableCod && (
+                      <span className="bg-gray-200 text-gray-700 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                        Temporarily Unavailable
+                      </span>
+                    )}
                   </div>
                   <p className="text-[11px] text-blumac-slate mt-0.5">
                     Pay in cash directly to the courier agent upon doorstep delivery.
@@ -706,7 +776,7 @@ export default function CheckoutPage() {
             {/* Place Order CTA */}
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (!gatewayStatus.enableRazorpay && !gatewayStatus.enableCod)}
               className="w-full py-4 bg-blumac-navy hover:bg-blumac-copper text-white text-xs font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all shadow-md group disabled:opacity-50 cursor-pointer"
             >
               <span>{submitting ? "Confirming Order..." : "Place Order & Pay"}</span>
