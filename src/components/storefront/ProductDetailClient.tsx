@@ -200,6 +200,10 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
               alt={product.name}
               fill
               priority
+              unoptimized={
+                (product.images[selectedImage] || product.images[0])?.startsWith("/uploads/") ||
+                (product.images[selectedImage] || product.images[0])?.startsWith("/")
+              }
               className="object-cover"
             />
             {/* Authenticity Badge */}
@@ -236,7 +240,13 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                       : "border-blumac-beige opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image
+                    src={img}
+                    alt=""
+                    fill
+                    unoptimized={img?.startsWith("/uploads/") || img?.startsWith("/")}
+                    className="object-cover"
+                  />
                 </button>
               ))}
             </div>

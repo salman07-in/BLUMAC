@@ -203,3 +203,4 @@ test("Category Management - 5. State Synchronization Without Page Refresh", () =
   assert.equal(selectedCategoryId, "cat-3", "Newly created category immediately auto-selected");
   assert.equal(categories[0].name, "Ampoules & Serums", "Sorted alphabetically in dropdown");
 });
+

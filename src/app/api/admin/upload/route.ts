@@ -51,9 +51,12 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Ensure uploads directory exists
+    // Ensure uploads directories exist (both public/uploads and root uploads)
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadDir, { recursive: true });
+
+    const rootUploadDir = path.join(process.cwd(), "uploads");
+    await mkdir(rootUploadDir, { recursive: true }).catch(() => {});
 
     // Generate safe unique filename
     const cleanBase = path
@@ -63,8 +66,10 @@ export async function POST(req: Request) {
       .replace(/-+/g, "-");
     const uniqueName = `${Date.now()}-${cleanBase || "upload"}${fileExt}`;
     const filePath = path.join(uploadDir, uniqueName);
+    const rootFilePath = path.join(rootUploadDir, uniqueName);
 
     await writeFile(filePath, buffer);
+    await writeFile(rootFilePath, buffer).catch(() => {});
 
     const publicUrl = `/uploads/${uniqueName}`;
     return NextResponse.json({

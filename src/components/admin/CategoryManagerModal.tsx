@@ -408,6 +408,7 @@ export function CategoryManagerModal({
                       src={image}
                       alt="Category preview"
                       fill
+                      unoptimized
                       className="object-cover"
                       sizes="112px"
                     />
@@ -521,6 +522,7 @@ export function CategoryManagerModal({
                                 src={cat.image}
                                 alt={cat.name}
                                 fill
+                                unoptimized
                                 className="object-cover"
                                 sizes="40px"
                               />
@@ -734,3 +736,4 @@ export function CategoryManagerModal({
     </div>
   );
 }
+
