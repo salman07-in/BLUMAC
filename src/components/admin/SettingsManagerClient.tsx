@@ -458,3 +458,4 @@ export function SettingsManagerClient({ initialSettings }: SettingsManagerClient
     </div>
   );
 }
+

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { BlumacLogo } from "@/components/common/BlumacLogo";
 import {
   LayoutDashboard,
+  Layout,
   Package,
   ShoppingBag,
   Tag,
@@ -35,6 +36,7 @@ export function AdminSidebar() {
     {
       label: "Growth & Marketing",
       items: [
+        { name: "Homepage Editor", href: "/admin/homepage", icon: Layout },
         { name: "Coupons & Offers", href: "/admin/coupons", icon: Tag },
         {
           name: "AI Product Studio",

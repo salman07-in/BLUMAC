@@ -106,3 +106,4 @@ test("Payment Gateways - 4. Disable Both Gateways (Emergency Store Pause)", () =
   assert.equal(attempt.allowed, false);
   assert.ok(attempt.error.includes("temporarily paused"));
 });
+

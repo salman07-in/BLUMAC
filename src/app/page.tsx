@@ -16,12 +16,65 @@ import {
 import { CATEGORIES, BRANDS } from "@/lib/products";
 import { getStoreBestSellers, getStoreTrending } from "@/lib/catalog";
 import { ProductCard } from "@/components/storefront/ProductCard";
+import { prisma } from "@/lib/db";
+import { parseHomepageConfig } from "@/lib/homepage";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const bestSellers = (await getStoreBestSellers()).slice(0, 4);
-  const trendingProducts = (await getStoreTrending()).slice(0, 4);
+  const [bestSellers, trendingProducts, homepageRecord] = await Promise.all([
+    getStoreBestSellers().then((res) => res.slice(0, 4)),
+    getStoreTrending().then((res) => res.slice(0, 4)),
+    prisma.storeSettings.findUnique({ where: { key: "homepage_config" } }),
+  ]);
+
+  const config = parseHomepageConfig(homepageRecord?.value);
+
+  // Fetch active categories dynamically from database
+  let categoriesData: Array<{
+    name: string;
+    slug: string;
+    image: string;
+    productCount: number;
+  }> = [];
+
+  try {
+    const dbCategories = await prisma.category.findMany({
+      where: { isActive: true },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    if (dbCategories.length > 0) {
+      categoriesData = dbCategories.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+        image:
+          c.image ||
+          CATEGORIES.find((cat) => cat.slug === c.slug)?.image ||
+          "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80",
+        productCount: c._count.products,
+      }));
+    } else {
+      categoriesData = CATEGORIES.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+        image: c.image,
+        productCount: c.productCount,
+      }));
+    }
+  } catch {
+    categoriesData = CATEGORIES.map((c) => ({
+      name: c.name,
+      slug: c.slug,
+      image: c.image,
+      productCount: c.productCount,
+    }));
+  }
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
@@ -35,50 +88,50 @@ export default async function HomePage() {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-blumac-copper/40 text-blumac-copperLight text-xs font-semibold tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-blumac-copper" />
-              <span>Direct from Seoul, South Korea • 100% Genuine</span>
+              <span>{config.hero.badge}</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-serif leading-tight text-white">
-              The Pinnacle of <br className="hidden sm:inline" />
+              {config.hero.titlePrefix} <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blumac-ivory via-blumac-copperLight to-blumac-copper">
-                Korean Skincare
+                {config.hero.titleHighlight}
               </span>{" "}
-              in India
+              {config.hero.titleSuffix}
             </h1>
 
             <p className="text-sm sm:text-base text-blumac-beige max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Curated cult-favorite formulations scientifically proven to repair your skin barrier, calm inflammation, and unlock the coveted Korean glass skin luminosity.
+              {config.hero.description}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
               <Link
-                href="/shop"
+                href={config.hero.primaryCtaLink || "/shop"}
                 className="w-full sm:w-auto px-8 py-3.5 bg-blumac-copper hover:bg-blumac-copperLight text-white text-xs sm:text-sm font-bold uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-copper/30 group"
               >
-                <span>Shop Best Sellers</span>
+                <span>{config.hero.primaryCtaText}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="/shop?sort=trending"
+                href={config.hero.secondaryCtaLink || "/shop?sort=trending"}
                 className="w-full sm:w-auto px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/20 transition-all flex items-center justify-center"
               >
-                Trending in Seoul 🔥
+                {config.hero.secondaryCtaText}
               </Link>
             </div>
 
             {/* Micro Trust Points */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/10 text-center lg:text-left">
               <div>
-                <p className="text-lg sm:text-2xl font-bold font-serif text-white">100%</p>
-                <p className="text-[11px] text-blumac-beige">Authentic Import</p>
+                <p className="text-lg sm:text-2xl font-bold font-serif text-white">{config.hero.stat1Value}</p>
+                <p className="text-[11px] text-blumac-beige">{config.hero.stat1Label}</p>
               </div>
               <div>
-                <p className="text-lg sm:text-2xl font-bold font-serif text-white">₹999+</p>
-                <p className="text-[11px] text-blumac-beige">Free All-India Shipping</p>
+                <p className="text-lg sm:text-2xl font-bold font-serif text-white">{config.hero.stat2Value}</p>
+                <p className="text-[11px] text-blumac-beige">{config.hero.stat2Label}</p>
               </div>
               <div>
-                <p className="text-lg sm:text-2xl font-bold font-serif text-white">4.9 ★</p>
-                <p className="text-[11px] text-blumac-beige">Loved by 30k+ Indian Users</p>
+                <p className="text-lg sm:text-2xl font-bold font-serif text-white">{config.hero.stat3Value}</p>
+                <p className="text-[11px] text-blumac-beige">{config.hero.stat3Label}</p>
               </div>
             </div>
           </div>
@@ -87,10 +140,11 @@ export default async function HomePage() {
           <div className="lg:col-span-5 relative flex justify-center">
             <div className="relative w-full max-w-md aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-blumac-navy">
               <Image
-                src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=80"
-                alt="BLUMAC Korean Skincare Editorial"
+                src={config.heroCard.imageUrl}
+                alt={config.heroCard.title || "BLUMAC Korean Skincare Editorial"}
                 fill
                 priority
+                unoptimized
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-blumac-navyDark via-transparent to-transparent opacity-80" />
@@ -99,28 +153,28 @@ export default async function HomePage() {
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
                 <ShieldCheck className="w-4 h-4 text-blumac-copper" />
                 <span className="text-[11px] font-bold text-blumac-navy uppercase tracking-wider">
-                  Verified Batch Codes
+                  {config.heroCard.badgeText}
                 </span>
               </div>
 
               {/* Hero bottom card highlight */}
               <div className="absolute bottom-6 inset-x-6 bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-xl border border-blumac-beige flex items-center justify-between">
-                <div>
+                <div className="min-w-0 pr-2">
                   <span className="text-[10px] uppercase font-bold text-blumac-copper tracking-wider block">
-                    Cult Favorite
+                    {config.heroCard.tag}
                   </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-blumac-navy">
-                    Beauty of Joseon Relief Sun
+                  <h4 className="text-xs sm:text-sm font-bold text-blumac-navy truncate">
+                    {config.heroCard.title}
                   </h4>
-                  <p className="text-[11px] text-blumac-slate">
-                    Rice + Probiotics SPF50+ PA++++
+                  <p className="text-[11px] text-blumac-slate truncate">
+                    {config.heroCard.subtitle}
                   </p>
                 </div>
                 <Link
-                  href="/product/beauty-of-joseon-relief-sun-rice-probiotics-spf50"
+                  href={config.heroCard.ctaLink || "/shop"}
                   className="px-3.5 py-2 bg-blumac-navy text-white text-xs font-bold rounded-lg hover:bg-blumac-copper transition-colors shrink-0"
                 >
-                  View
+                  {config.heroCard.ctaText}
                 </Link>
               </div>
             </div>
@@ -137,10 +191,10 @@ export default async function HomePage() {
             </div>
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-blumac-navy">
-                100% Genuine Imports
+                {config.pillars[0]?.title || "100% Genuine Imports"}
               </h4>
               <p className="text-[11px] text-blumac-slate mt-0.5">
-                Direct from Seoul with Indian customs compliance.
+                {config.pillars[0]?.desc || "Direct from Seoul with Indian customs compliance."}
               </p>
             </div>
           </div>
@@ -151,10 +205,10 @@ export default async function HomePage() {
             </div>
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-blumac-navy">
-                Pan-India Delivery
+                {config.pillars[1]?.title || "Pan-India Delivery"}
               </h4>
               <p className="text-[11px] text-blumac-slate mt-0.5">
-                Free shipping on orders above ₹999 across all PIN codes.
+                {config.pillars[1]?.desc || "Free shipping on orders above ₹999 across all PIN codes."}
               </p>
             </div>
           </div>
@@ -165,10 +219,10 @@ export default async function HomePage() {
             </div>
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-blumac-navy">
-                Easy Return Policy
+                {config.pillars[2]?.title || "Easy Return Policy"}
               </h4>
               <p className="text-[11px] text-blumac-slate mt-0.5">
-                Hassle-free replacements for damaged or incorrect items.
+                {config.pillars[2]?.desc || "Hassle-free replacements for damaged or incorrect items."}
               </p>
             </div>
           </div>
@@ -179,10 +233,10 @@ export default async function HomePage() {
             </div>
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-blumac-navy">
-                Curated for India
+                {config.pillars[3]?.title || "Curated for India"}
               </h4>
               <p className="text-[11px] text-blumac-slate mt-0.5">
-                Specially selected for Indian humidity and skin concerns.
+                {config.pillars[3]?.desc || "Specially selected for Indian humidity and skin concerns."}
               </p>
             </div>
           </div>
@@ -210,7 +264,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
-          {CATEGORIES.map((cat) => (
+          {categoriesData.map((cat) => (
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
@@ -221,6 +275,7 @@ export default async function HomePage() {
                   src={cat.image}
                   alt={cat.name}
                   fill
+                  unoptimized
                   className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
