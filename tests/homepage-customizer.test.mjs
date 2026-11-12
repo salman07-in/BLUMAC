@@ -183,3 +183,4 @@ test("Homepage Customizer - 6. Invalid pillars length falls back to defaults saf
   const sanitized = sanitizeHomepagePayload({ pillars: invalidPillars });
   assert.deepEqual(sanitized.pillars, DEFAULT_HOMEPAGE_CONFIG.pillars);
 });
+

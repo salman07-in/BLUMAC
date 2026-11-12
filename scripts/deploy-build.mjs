@@ -25,7 +25,8 @@ if (dbUrl.startsWith("mysql://")) {
 }
 
 console.log("🌸 Generating Prisma Client...");
-execSync("npx prisma generate", { stdio: "inherit" });
+const schemaArg = dbUrl.startsWith("file:") ? "--schema=prisma/schema.sqlite.prisma" : "";
+execSync(`npx prisma generate ${schemaArg}`.trim(), { stdio: "inherit" });
 
 console.log("🌸 Starting Next.js Production Build (Single Worker Mode for Hostinger)...");
 execSync("npx next build", {

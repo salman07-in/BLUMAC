@@ -102,3 +102,4 @@ export function parseHomepageConfig(rawJson: string | null | undefined): Homepag
     return DEFAULT_HOMEPAGE_CONFIG;
   }
 }
+

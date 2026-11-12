@@ -16,3 +16,4 @@ export default async function AdminHomepagePage() {
 
   return <HomepageCustomizerClient initialConfig={config} />;
 }
+
