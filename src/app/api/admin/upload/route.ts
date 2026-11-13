@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { requireAdmin } from "@/lib/auth";
+import { uploadImageBuffer } from "@/lib/storage";
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
@@ -51,32 +51,20 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Ensure uploads directories exist (both public/uploads and root uploads)
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
+    // Upload to Firebase Cloud Storage (with local disk fallback)
+    const result = await uploadImageBuffer({
+      buffer,
+      originalName: file.name,
+      mimeType: file.type,
+      folder: "products",
+    });
 
-    const rootUploadDir = path.join(process.cwd(), "uploads");
-    await mkdir(rootUploadDir, { recursive: true }).catch(() => {});
-
-    // Generate safe unique filename
-    const cleanBase = path
-      .basename(file.name, fileExt)
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "-")
-      .replace(/-+/g, "-");
-    const uniqueName = `${Date.now()}-${cleanBase || "upload"}${fileExt}`;
-    const filePath = path.join(uploadDir, uniqueName);
-    const rootFilePath = path.join(rootUploadDir, uniqueName);
-
-    await writeFile(filePath, buffer);
-    await writeFile(rootFilePath, buffer).catch(() => {});
-
-    const publicUrl = `/uploads/${uniqueName}`;
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      fileName: file.name,
-      size: file.size,
+      url: result.url,
+      storageProvider: result.storageProvider,
+      fileName: result.fileName,
+      size: result.size,
     });
   } catch (error: any) {
     console.error("Upload error:", error);
