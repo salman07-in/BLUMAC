@@ -7,7 +7,7 @@
     "build": "node scripts/deploy-build.mjs",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
+    "postinstall": "node scripts/postinstall-prisma.mjs",
     "db:generate": "prisma generate",
     "db:generate:local": "prisma generate --schema=prisma/schema.sqlite.prisma",
     "db:generate:mysql": "prisma generate --schema=prisma/schema.prisma",
