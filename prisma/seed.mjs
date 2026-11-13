@@ -6,6 +6,13 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌸 Seeding BLUMAC Korean Store database...");
 
+  // Check if products already exist in database to prevent overwriting user-created products
+  const existingProductsCount = await prisma.product.count();
+  if (existingProductsCount > 0) {
+    console.log(`ℹ️ Database already contains ${existingProductsCount} products. Skipping demo products seed to preserve your real store inventory.`);
+    return;
+  }
+
   // 1. Admin & Customer Users
   const passwordHashAdmin = await bcrypt.hash("BlumacAdmin@2026", 10);
   const admin = await prisma.user.upsert({

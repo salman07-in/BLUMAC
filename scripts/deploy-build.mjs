@@ -14,9 +14,8 @@ if (dbUrl.startsWith("mysql://")) {
   }
 
   try {
-    console.log("🌸 Populating initial Korean skincare catalog & admin user...");
+    console.log("🌸 Checking database initialization (skips automatically if products already exist)...");
     execSync("node prisma/seed.mjs", { stdio: "inherit" });
-    console.log("✅ Catalog and admin user seed complete.");
   } catch (err) {
     console.warn("⚠️ Notice during db:seed:", err.message || err);
   }
